@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-const DEPARTMENTS = [
-  { id: 'af', name: 'AF', emoji: '✈️' },
-  { id: 'iad', name: 'IAD', emoji: '⚖️' },
-  { id: 'swat', name: 'SWAT', emoji: '🛡️' },
-  { id: 'pai', name: 'PAI', emoji: '🎓' },
-  { id: 'dvd', name: 'DVD', emoji: '🚗' },
-  { id: 'db', name: 'DB', emoji: '🕵️' },
-  { id: 'k9', name: 'K9', emoji: '🐕' },
-  { id: 'cpd', name: 'CPD', emoji: '🚔' },
-  { id: 'halt', name: 'HALT', emoji: '🚁' },
-  { id: 'ted', name: 'TED', emoji: '🔫' },
-  { id: 'srt', name: 'SRT', emoji: '🛡️' },
-  { id: 'nred', name: 'NRED', emoji: '🚨' },
-  { id: 'med', name: 'MED', emoji: '🏥' }
-];
+import { DEPARTMENTS } from '../lib/departments';
 
 export default function PremiumForm() {
   const router = useRouter();
@@ -25,11 +10,10 @@ export default function PremiumForm() {
   const [submitting, setSubmitting] = useState(false);
   const [department, setDepartment] = useState('');
   const [participants, setParticipants] = useState([]);
-  const [step, setStep] = useState(0); // 0=selectDept, 1=name, 2=rank, 3=static, 4=weeks, 5=addMore
+  const [step, setStep] = useState(0);
   const [currentParticipant, setCurrentParticipant] = useState({
     name: '', rank: '', static: '', weeks: ''
   });
-  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     fetch('/api/me')
@@ -43,27 +27,24 @@ export default function PremiumForm() {
       .then(res => res.json())
       .then(data => {
         setProfile(data.profile);
-        if (data.profile.fullName) {
-          // Имя берём из профиля автоматически
-        }
       });
   }, []);
 
   const handleNext = () => {
     if (step === 0) {
-      if (!department) { alert('Выберите отдел!'); return; }
+      if (!department) { window.toast.error('Выберите отдел!'); return; }
       setStep(1);
     } else if (step === 1) {
-      if (!currentParticipant.name.trim()) { alert('Введите имя!'); return; }
+      if (!currentParticipant.name.trim()) { window.toast.error('Введите имя!'); return; }
       setStep(2);
     } else if (step === 2) {
-      if (!currentParticipant.rank.trim()) { alert('Введите ранг!'); return; }
+      if (!currentParticipant.rank.trim()) { window.toast.error('Введите ранг!'); return; }
       setStep(3);
     } else if (step === 3) {
-      if (!currentParticipant.static.trim()) { alert('Введите static ID!'); return; }
+      if (!currentParticipant.static.trim()) { window.toast.error('Введите static ID!'); return; }
       setStep(4);
     } else if (step === 4) {
-      if (!currentParticipant.weeks.trim()) { alert('Введите кол-во недель!'); return; }
+      if (!currentParticipant.weeks.trim()) { window.toast.error('Введите кол-во недель!'); return; }
       setParticipants([...participants, currentParticipant]);
       setCurrentParticipant({ name: '', rank: '', static: '', weeks: '' });
       setStep(5);
@@ -96,9 +77,9 @@ export default function PremiumForm() {
           participants: participantsText
         })
       });
-      if (res.ok) { alert('✅ Премия отправлена!'); router.push('/dashboard'); }
+      if (res.ok) { window.toast.success('Премия отправлена!'); router.push('/dashboard'); }
       else { const err = await res.json(); throw new Error(err.error); }
-    } catch (e) { alert('❌ ' + e.message); }
+    } catch (e) { window.toast.error(e.message); }
     finally { setSubmitting(false); }
   };
 
@@ -113,7 +94,6 @@ export default function PremiumForm() {
       <div style={{ maxWidth:'500px',margin:'0 auto',background:'rgba(255,255,255,0.05)',borderRadius:'20px',padding:'40px',border:'1px solid rgba(255,255,255,0.1)' }}>
         <h1 style={{ marginBottom:'30px',fontSize:'28px',textAlign:'center' }}>🎯 Премия</h1>
 
-        {/* Прогресс участников */}
         {participants.length > 0 && (
           <div style={{ marginBottom:'20px',padding:'15px',background:'rgba(255,215,0,0.05)',borderRadius:'10px' }}>
             <div style={{ fontSize:'14px',color:'#FFD700',marginBottom:'10px' }}>Участники ({participants.length}):</div>
