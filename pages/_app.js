@@ -49,7 +49,6 @@ export default function App({ Component, pageProps }) {
           background: 'rgba(10,10,26,0.97)', zIndex: 99999,
           display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
         }}>
-          {/* Крутящийся куб */}
           <div style={{ perspective: '800px', marginBottom: '40px' }}>
             <div style={{
               width: '70px', height: '70px',
@@ -61,11 +60,7 @@ export default function App({ Component, pageProps }) {
                   from { transform: rotateX(0deg) rotateY(0deg); }
                   to { transform: rotateX(360deg) rotateY(360deg); }
                 }
-                @keyframes spin {
-                  to { transform: rotate(360deg); }
-                }
               `}</style>
-              {/* 6 граней куба */}
               <div style={{ position:'absolute',width:'100%',height:'100%',border:'2px solid #5865F2',background:'rgba(88,101,242,0.15)',transform:'rotateY(0deg) translateZ(35px)' }} />
               <div style={{ position:'absolute',width:'100%',height:'100%',border:'2px solid #4CAF50',background:'rgba(76,175,80,0.15)',transform:'rotateY(90deg) translateZ(35px)' }} />
               <div style={{ position:'absolute',width:'100%',height:'100%',border:'2px solid #FF9800',background:'rgba(255,152,0,0.15)',transform:'rotateY(180deg) translateZ(35px)' }} />
@@ -75,12 +70,10 @@ export default function App({ Component, pageProps }) {
             </div>
           </div>
 
-          {/* Название */}
           <div style={{ color: 'white', fontSize: '20px', fontWeight: 700, marginBottom: '20px', letterSpacing: '2px' }}>
-            MEMPHIS LSPD FORMS
+            LSPD FORMS
           </div>
 
-          {/* Прогресс-бар */}
           <div style={{ width: '250px', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
             <div style={{
               width: `${Math.min(progress, 100)}%`, height: '100%',
@@ -93,15 +86,85 @@ export default function App({ Component, pageProps }) {
           </div>
         </div>
       )}
+
       <style jsx global>{`
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-          background: #0a0a1a; color: white;
+        * { 
+          margin: 0; 
+          padding: 0; 
+          box-sizing: border-box; 
         }
-        input, textarea, button { font-family: inherit; }
-        a, button, input, textarea, select, [onclick], .card, .back-btn, .submit-btn, .logout-btn, .copy-btn { cursor: pointer; }
-        select option { background: #1a1a3e; color: white; }
+        
+        html {
+          font-size: 16px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background: #0a0a1a;
+          color: white;
+          font-feature-settings: 'cv11', 'ss01';
+          line-height: 1.5;
+        }
+
+        input, textarea, button, select {
+          font-family: inherit;
+        }
+
+        /* Цифры и код — моноширинный */
+        code, .mono, [data-mono] {
+          font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+        }
+
+        /* Курсор */
+        a, button, input, textarea, select, [onclick], .card, .back-btn, .submit-btn, .logout-btn, .copy-btn {
+          cursor: pointer;
+        }
+
+        /* Скроллбар */
+        ::-webkit-scrollbar {
+          width: 10px;
+          height: 10px;
+        }
+        ::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.02);
+        }
+        ::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 5px;
+          border: 2px solid transparent;
+          background-clip: content-box;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+          background-clip: content-box;
+        }
+
+        /* Селекты */
+        select option {
+          background: #1a1a3e;
+          color: white;
+        }
+
+        /* Убираем синее выделение */
+        ::selection {
+          background: rgba(88, 101, 242, 0.4);
+        }
+
+        /* Кнопки */
+        button {
+          transition: all 0.2s ease;
+        }
+
+        button:active:not(:disabled) {
+          transform: scale(0.98);
+        }
+
+        /* Inputs */
+        input:focus, textarea:focus, select:focus {
+          outline: none;
+        }
       `}</style>
       <Component {...pageProps} />
     </>
