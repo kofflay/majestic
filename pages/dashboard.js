@@ -44,6 +44,7 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, today: 0 });
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     fetch('/api/me').then(r => r.json()).then(d => {
@@ -51,6 +52,7 @@ export default function Dashboard() {
       setUser(d.user); setLoading(false);
     });
     fetch('/api/stats').then(r => r.json()).then(d => setStats(d)).catch(() => {});
+    fetch('/api/admin/check').then(r => r.json()).then(d => setIsAdmin(d.isAdmin)).catch(() => {});
   }, []);
 
   const handleLogout = async () => {
@@ -58,7 +60,7 @@ export default function Dashboard() {
     router.push('/');
   };
 
-if (loading) return <SkeletonDashboard />;
+  if (loading) return <SkeletonDashboard />;
 
   return (
     <div style={{ minHeight:'100vh', background:'linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 100%)', color:'white' }}>
@@ -119,6 +121,31 @@ if (loading) return <SkeletonDashboard />;
               onMouseEnter={e => e.currentTarget.style.borderColor = '#5865F2'}
               onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(88,101,242,0.4)'}
             />
+
+            {isAdmin && (
+              <button 
+                onClick={() => router.push('/admin')}
+                style={{ 
+                  background: 'rgba(255,215,0,0.15)',
+                  color: '#FFD700',
+                  border: '1px solid rgba(255,215,0,0.3)',
+                  padding: '8px 14px',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,215,0,0.25)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,215,0,0.15)'}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Админка
+              </button>
+            )}
             
             <button 
               onClick={() => router.push('/profile')} 
