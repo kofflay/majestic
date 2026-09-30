@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-const DEPARTMENTS = [
-  { id: 'af', name: 'AF', emoji: '✈️' },
-  { id: 'iad', name: 'IAD', emoji: '⚖️' },
-  { id: 'swat', name: 'SWAT', emoji: '🛡️' },
-  { id: 'pai', name: 'PAI', emoji: '🎓' },
-  { id: 'dvd', name: 'DVD', emoji: '🚗' },
-  { id: 'db', name: 'DB', emoji: '🕵️' },
-  { id: 'k9', name: 'K9', emoji: '🐕' },
-  { id: 'cpd', name: 'CPD', emoji: '🚔' },
-  { id: 'halt', name: 'HALT', emoji: '🚁' },
-  { id: 'ted', name: 'TED', emoji: '🔫' },
-  { id: 'srt', name: 'SRT', emoji: '🛡️' },
-  { id: 'nred', name: 'NRED', emoji: '🚨' },
-  { id: 'med', name: 'MED', emoji: '🏥' }
-];
+import { DEPARTMENTS, TRANSFER_DEPARTMENTS } from '../../lib/departments';
 
 const RANKS = [
   { value: '1', label: '1' }, { value: '2', label: '2' }, { value: '3', label: '3' },
@@ -70,30 +55,30 @@ export default function TransferForm() {
     });
   }, []);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!isFormValid()) {
-    if (isSameDepartment) { window.toast.error('Нельзя перевестись в тот же отдел!'); return; }
-    window.toast.error('Заполните все обязательные поля!'); return;
-  }
-  setSubmitting(true);
-  try {
-    const res = await fetch('/api/submit', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'transfer', targetDepartment: formData.targetDepartment,
-        fullName: formData.fullName, rank: formData.rank,
-        currentDepartment: formData.currentDepartment, reason: formData.reason,
-        dbWhatIs: formData.dbWhatIs, dbExperience: formData.dbExperience,
-        dbExamples: formData.dbExamples, dbServers: formData.dbServers,
-        dbKnowledge: formData.dbKnowledge, dbLawKnowledge: formData.dbLawKnowledge
-      })
-    });
-    if (res.ok) { window.toast.success('Заявка отправлена!'); router.push('/dashboard'); }
-    else { const err = await res.json(); throw new Error(err.error); }
-  } catch (e) { window.toast.error(e.message); }
-  finally { setSubmitting(false); }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isFormValid()) {
+      if (isSameDepartment) { window.toast.error('Нельзя перевестись в тот же отдел!'); return; }
+      window.toast.error('Заполните все обязательные поля!'); return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'transfer', targetDepartment: formData.targetDepartment,
+          fullName: formData.fullName, rank: formData.rank,
+          currentDepartment: formData.currentDepartment, reason: formData.reason,
+          dbWhatIs: formData.dbWhatIs, dbExperience: formData.dbExperience,
+          dbExamples: formData.dbExamples, dbServers: formData.dbServers,
+          dbKnowledge: formData.dbKnowledge, dbLawKnowledge: formData.dbLawKnowledge
+        })
+      });
+      if (res.ok) { window.toast.success('Заявка отправлена!'); router.push('/dashboard'); }
+      else { const err = await res.json(); throw new Error(err.error); }
+    } catch (e) { window.toast.error(e.message); }
+    finally { setSubmitting(false); }
+  };
 
   if (loading || !user) return <div style={{ display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0a0a1a',color:'white' }}>Загрузка...</div>;
 
@@ -127,7 +112,7 @@ const handleSubmit = async (e) => {
             <label style={{ display:'block',marginBottom:'8px',color:'#8b8ba7' }}>Желаемый отдел *</label>
             <select required value={formData.targetDepartment} onChange={e => setFormData({...formData,targetDepartment:e.target.value,dbWhatIs:'',dbExperience:'',dbExamples:'',dbServers:'',dbKnowledge:'',dbLawKnowledge:''})} style={{...s,appearance:'none',cursor:'pointer'}}>
               <option value="">-- Выберите отдел --</option>
-              {DEPARTMENTS.map(d => <option key={d.id} value={d.id}>{d.emoji} {d.name}</option>)}
+              {TRANSFER_DEPARTMENTS.map(d => <option key={d.id} value={d.id}>{d.emoji} {d.name}</option>)}
             </select>
           </div>
           {isSameDepartment && <div style={{ background:'rgba(244,67,54,0.15)',border:'1px solid #F44336',borderRadius:'10px',padding:'14px 18px',marginBottom:'20px',color:'#EF9A9A',fontSize:'14px' }}>❌ Нельзя перевестись в тот же отдел!</div>}
