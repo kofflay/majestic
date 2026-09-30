@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { SkeletonDashboard } from '../components/Skeleton';
+import { SkeletonDashboard } from '@/components/Skeleton';
 
 const categories = [
   {
