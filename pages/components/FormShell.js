@@ -1,6 +1,21 @@
 import { useRouter } from 'next/router';
 
-export default function FormShell({ title, icon, children, accent = '#5865F2' }) {
+/**
+ * Универсальная обёртка для всех форм
+ * 
+ * @param {string} title - заголовок (например, "Запрос на повышение")
+ * @param {string} icon - эмодзи (например, "📈")
+ * @param {string} accent - цвет полоски и кнопок (например, "#4CAF50")
+ * @param {ReactNode} children - содержимое формы
+ * @param {string} backTo - куда вернуться (по умолчанию "/dashboard")
+ */
+export default function FormShell({ 
+  title, 
+  icon, 
+  accent = '#5865F2', 
+  children, 
+  backTo = '/dashboard' 
+}) {
   const router = useRouter();
 
   return (
@@ -31,7 +46,7 @@ export default function FormShell({ title, icon, children, accent = '#5865F2' })
           gap: '16px'
         }}>
           <button 
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push(backTo)}
             style={{
               background: 'rgba(255,255,255,0.05)',
               color: 'white',
@@ -57,10 +72,10 @@ export default function FormShell({ title, icon, children, accent = '#5865F2' })
           <div style={{ 
             fontSize: '15px', 
             fontWeight: 600, 
-            color: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px',
+            color: 'white'
           }}>
             <span style={{ fontSize: '18px' }}>{icon}</span>
             {title}
@@ -82,7 +97,11 @@ export default function FormShell({ title, icon, children, accent = '#5865F2' })
         }}>
           {/* Градиентная полоска сверху */}
           <div style={{ 
-            position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            height: '3px',
             background: `linear-gradient(90deg, ${accent}, ${accent}80, transparent)`
           }} />
 
