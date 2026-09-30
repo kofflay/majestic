@@ -70,30 +70,30 @@ export default function TransferForm() {
     });
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!isFormValid()) {
-      if (isSameDepartment) { alert('❌ Нельзя перевестись в тот же отдел!'); return; }
-      alert('❌ Заполните все обязательные поля!'); return;
-    }
-    setSubmitting(true);
-    try {
-      const res = await fetch('/api/submit', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'transfer', targetDepartment: formData.targetDepartment,
-          fullName: formData.fullName, rank: formData.rank,
-          currentDepartment: formData.currentDepartment, reason: formData.reason,
-          dbWhatIs: formData.dbWhatIs, dbExperience: formData.dbExperience,
-          dbExamples: formData.dbExamples, dbServers: formData.dbServers,
-          dbKnowledge: formData.dbKnowledge, dbLawKnowledge: formData.dbLawKnowledge
-        })
-      });
-      if (res.ok) { alert('✅ Заявка отправлена!'); router.push('/dashboard'); }
-      else { const err = await res.json(); throw new Error(err.error); }
-    } catch (e) { alert('❌ ' + e.message); }
-    finally { setSubmitting(false); }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!isFormValid()) {
+    if (isSameDepartment) { window.toast.error('Нельзя перевестись в тот же отдел!'); return; }
+    window.toast.error('Заполните все обязательные поля!'); return;
+  }
+  setSubmitting(true);
+  try {
+    const res = await fetch('/api/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'transfer', targetDepartment: formData.targetDepartment,
+        fullName: formData.fullName, rank: formData.rank,
+        currentDepartment: formData.currentDepartment, reason: formData.reason,
+        dbWhatIs: formData.dbWhatIs, dbExperience: formData.dbExperience,
+        dbExamples: formData.dbExamples, dbServers: formData.dbServers,
+        dbKnowledge: formData.dbKnowledge, dbLawKnowledge: formData.dbLawKnowledge
+      })
+    });
+    if (res.ok) { window.toast.success('Заявка отправлена!'); router.push('/dashboard'); }
+    else { const err = await res.json(); throw new Error(err.error); }
+  } catch (e) { window.toast.error(e.message); }
+  finally { setSubmitting(false); }
+};
 
   if (loading || !user) return <div style={{ display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0a0a1a',color:'white' }}>Загрузка...</div>;
 
