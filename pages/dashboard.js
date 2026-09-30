@@ -58,15 +58,15 @@ export default function Dashboard() {
   };
 
   if (loading) return (
-    <div style={{ display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0a0a1a',color:'white' }}>
-      <div style={{ width:'50px',height:'50px',border:'4px solid rgba(88,101,242,0.15)',borderTopColor:'#5865F2',borderRadius:'50%',animation:'spin 1s linear infinite' }} />
+    <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', background:'#0a0a1a', color:'white' }}>
+      <div style={{ width:'50px', height:'50px', border:'4px solid rgba(88,101,242,0.15)', borderTopColor:'#5865F2', borderRadius:'50%', animation:'spin 1s linear infinite' }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 
   return (
     <div style={{ minHeight:'100vh', background:'linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 100%)', color:'white' }}>
-      
+
       {/* Sticky шапка */}
       <div style={{
         position: 'sticky',
@@ -84,7 +84,7 @@ export default function Dashboard() {
           alignItems: 'center',
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '16px 30px',
+          padding: '16px 20px',
           gap: '16px'
         }}>
           {/* Логотип */}
@@ -177,20 +177,20 @@ export default function Dashboard() {
       </div>
 
       {/* Контент */}
-      <div style={{ padding: '0 30px 40px' }}>
-        
+      <div style={{ padding: '0 20px 40px' }}>
+
         {/* Статистика */}
-        <div style={{ maxWidth:'1200px', margin:'0 auto 30px', display:'flex', gap:'15px' }}>
-          <div style={{ flex:1, background:'rgba(88,101,242,0.1)', border:'1px solid rgba(88,101,242,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center' }}>
+        <div style={{ maxWidth:'1200px', margin:'0 auto 30px', display:'flex', gap:'15px', flexWrap: 'wrap' }}>
+          <div style={{ flex:'1 1 150px', background:'rgba(88,101,242,0.1)', border:'1px solid rgba(88,101,242,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center' }}>
             <div style={{ fontSize:'32px', fontWeight:700, color:'#5865F2' }}>{stats.today}</div>
             <div style={{ color:'#8b8ba7', fontSize:'13px', marginTop:'5px', fontWeight:500 }}>Сегодня</div>
           </div>
-          <div style={{ flex:1, background:'rgba(76,175,80,0.1)', border:'1px solid rgba(76,175,80,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center' }}>
+          <div style={{ flex:'1 1 150px', background:'rgba(76,175,80,0.1)', border:'1px solid rgba(76,175,80,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center' }}>
             <div style={{ fontSize:'32px', fontWeight:700, color:'#4CAF50' }}>{stats.total}</div>
             <div style={{ color:'#8b8ba7', fontSize:'13px', marginTop:'5px', fontWeight:500 }}>Всего</div>
           </div>
           <div 
-            style={{ flex:1, background:'rgba(255,152,0,0.1)', border:'1px solid rgba(255,152,0,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center', cursor:'pointer', transition:'all 0.2s' }} 
+            style={{ flex:'1 1 150px', background:'rgba(255,152,0,0.1)', border:'1px solid rgba(255,152,0,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center', cursor:'pointer', transition:'all 0.2s' }} 
             onClick={() => router.push('/history')}
             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,152,0,0.18)'}
             onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,152,0,0.1)'}
@@ -203,42 +203,116 @@ export default function Dashboard() {
         {/* Категории */}
         <div style={{ maxWidth:'1200px', margin:'0 auto' }}>
           {categories.map(cat => (
-            <div key={cat.title} style={{ marginBottom:'35px' }}>
-              <h2 style={{ fontSize:'22px', marginBottom:'20px', paddingBottom:'10px', borderBottom:`2px solid ${cat.color}`, display:'inline-block', fontWeight:600 }}>
-                {cat.title}
-              </h2>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(250px,1fr))', gap:'15px' }}>
+            <div key={cat.title} style={{ marginBottom:'32px' }}>
+
+              {/* Заголовок категории */}
+              <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'16px' }}>
+                <div style={{ width:'4px', height:'20px', background: cat.color, borderRadius:'2px' }} />
+                <h2 style={{ fontSize:'18px', margin:0, fontWeight:600, color:'white' }}>
+                  {cat.title}
+                </h2>
+                <div style={{ flex:1, height:'1px', background:'linear-gradient(90deg, rgba(255,255,255,0.08), transparent)' }} />
+                <span style={{ fontSize:'12px', color:'#8b8ba7', fontWeight:500 }}>
+                  {cat.items.length}
+                </span>
+              </div>
+
+              {/* Карточки */}
+              <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'12px' }}>
                 {cat.items.map(item => (
                   <div 
                     key={item.id} 
                     onClick={() => router.push(`/forms/${item.id}`)} 
                     style={{ 
                       background:'rgba(255,255,255,0.03)',
-                      backdropFilter:'blur(10px)',
                       border:'1px solid rgba(255,255,255,0.08)',
-                      borderRadius:'16px',
-                      padding:'25px',
+                      borderRadius:'14px',
+                      padding:'20px',
                       cursor:'pointer',
-                      textAlign:'center',
+                      display:'flex',
+                      alignItems:'center',
+                      gap:'16px',
+                      transition:'all 0.2s',
                       position:'relative',
-                      overflow:'hidden',
-                      transition:'all 0.3s'
+                      overflow:'hidden'
                     }}
                     onMouseEnter={e => {
-                      e.currentTarget.style.transform = 'translateY(-5px) scale(1.02)';
-                      e.currentTarget.style.borderColor = cat.color;
-                      e.currentTarget.style.boxShadow = `0 15px 40px ${cat.color}30`;
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.borderColor = cat.color + '80';
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                      e.currentTarget.style.boxShadow = `0 8px 24px ${cat.color}20`;
+                      const iconBox = e.currentTarget.querySelector('.icon-box');
+                      if (iconBox) iconBox.style.background = cat.color + '25';
                     }}
                     onMouseLeave={e => {
                       e.currentTarget.style.transform = '';
                       e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)';
+                      e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
                       e.currentTarget.style.boxShadow = '';
+                      const iconBox = e.currentTarget.querySelector('.icon-box');
+                      if (iconBox) iconBox.style.background = cat.color + '15';
                     }}
                   >
-                    <div style={{ position:'absolute', top:0, left:0, width:'4px', height:'100%', background:cat.color }}></div>
-                    <div style={{ fontSize:'36px', marginBottom:'10px' }}>{item.icon}</div>
-                    <h3 style={{ fontSize:'16px', marginBottom:'8px', fontWeight:600 }}>{item.title}</h3>
-                    <p style={{ color:'#8b8ba7', fontSize:'13px', margin:0 }}>{item.description}</p>
+                    {/* Иконка в квадрате */}
+                    <div 
+                      className="icon-box"
+                      style={{ 
+                        width:'48px',
+                        height:'48px',
+                        minWidth:'48px',
+                        borderRadius:'12px',
+                        background: cat.color + '15',
+                        display:'flex',
+                        alignItems:'center',
+                        justifyContent:'center',
+                        fontSize:'24px',
+                        transition:'background 0.2s'
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+
+                    {/* Текст */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <h3 style={{ 
+                        fontSize:'15px', 
+                        marginBottom:'4px', 
+                        fontWeight:600,
+                        color:'white',
+                        overflow:'hidden',
+                        textOverflow:'ellipsis',
+                        whiteSpace:'nowrap'
+                      }}>
+                        {item.title}
+                      </h3>
+                      <p style={{ 
+                        color:'#8b8ba7', 
+                        fontSize:'12px', 
+                        margin:0,
+                        lineHeight:1.4,
+                        display:'-webkit-box',
+                        WebkitLineClamp:2,
+                        WebkitBoxOrient:'vertical',
+                        overflow:'hidden'
+                      }}>
+                        {item.description}
+                      </p>
+                    </div>
+
+                    {/* Стрелка справа */}
+                    <svg 
+                      width="16" 
+                      height="16" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="#8b8ba7" 
+                      strokeWidth="2.5" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                      style={{ minWidth:'16px', opacity:0.5 }}
+                    >
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
                   </div>
                 ))}
               </div>
