@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { SkeletonProfile } from '../components/Skeleton';
 
 // Иконки и цвета по типу заявки
 const TYPE_META = {
@@ -58,12 +59,7 @@ export default function History() {
     }).catch(() => router.push('/'));
   }, []);
 
-  if (loading || !user) return (
-    <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', background:'#0a0a1a', color:'white' }}>
-      <div style={{ width:'50px', height:'50px', border:'4px solid rgba(88,101,242,0.15)', borderTopColor:'#5865F2', borderRadius:'50%', animation:'spin 1s linear infinite' }} />
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  );
+if (loading || !user) return <SkeletonProfile />;
 
   // Уникальные типы для фильтра
   const availableTypes = ['all', ...new Set(history.map(h => h.type).filter(Boolean))];
