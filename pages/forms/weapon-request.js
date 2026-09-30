@@ -78,27 +78,27 @@ export default function WeaponRequestForm() {
     return true;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!isFormValid()) {
-      if (isDroneBlocked) { alert('❌ Дрон доступен только для отделов K9 и DB!'); return; }
-      alert('❌ Пожалуйста, заполните все обязательные поля!'); return;
-    }
-    setSubmitting(true);
-    try {
-      const res = await fetch('/api/submit', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'weapon-request', fullName: formData.fullName,
-          department: formData.department, rank: formData.rank,
-          weapon: selectedWeapon?.label || formData.weapon
-        })
-      });
-      if (res.ok) { alert('✅ Запрос на спец вооружение успешно отправлен!'); router.push('/dashboard'); }
-      else { const error = await res.json(); throw new Error(error.error || 'Ошибка отправки'); }
-    } catch (error) { alert('❌ Ошибка при отправке запроса: ' + error.message); }
-    finally { setSubmitting(false); }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!isFormValid()) {
+    if (isDroneBlocked) { window.toast.error('Дрон доступен только для отделов K9 и DB!'); return; }
+    window.toast.error('Заполните все обязательные поля!'); return;
+  }
+  setSubmitting(true);
+  try {
+    const res = await fetch('/api/submit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'weapon-request', fullName: formData.fullName,
+        department: formData.department, rank: formData.rank,
+        weapon: selectedWeapon?.label || formData.weapon
+      })
+    });
+    if (res.ok) { window.toast.success('Запрос на спец вооружение отправлен!'); router.push('/dashboard'); }
+    else { const error = await res.json(); throw new Error(error.error || 'Ошибка отправки'); }
+  } catch (error) { window.toast.error(error.message); }
+  finally { setSubmitting(false); }
+};
 
   if (loading || !user) return <div style={{ display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0a0a1a',color:'white' }}>Загрузка...</div>;
 
