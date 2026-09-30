@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import FormShell from '../../components/FormShell';
+import FormShell from '@/components/FormShell';
 
 const RANK_OPTIONS = ['1-2 ранг', '2-3 ранг', '3-4 ранг', '4-5 ранг', '5-6 ранг', '6-7 ранг', '7-8 ранг', '8-9 ранг', '9-10 ранг', '10-11 ранг', '11-12 ранг', '12-13 ранг', '13-14 ранг', '14-15 ранг'];
 
