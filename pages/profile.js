@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-const DEPARTMENTS = [
-  { id: 'af', name: 'AF', emoji: '✈️' },
-  { id: 'iad', name: 'IAD', emoji: '⚖️' },
-  { id: 'swat', name: 'SWAT', emoji: '🛡️' },
-  { id: 'pai', name: 'PAI', emoji: '🎓' },
-  { id: 'dvd', name: 'DVD', emoji: '🚗' },
-  { id: 'db', name: 'DB', emoji: '🕵️' },
-  { id: 'k9', name: 'K9', emoji: '🐕' },
-  { id: 'cpd', name: 'CPD', emoji: '🚔' },
-  { id: 'halt', name: 'HALT', emoji: '🚁' },
-  { id: 'ted', name: 'TED', emoji: '🔫' },
-  { id: 'srt', name: 'SRT', emoji: '🛡️' },
-  { id: 'nred', name: 'NRED', emoji: '🚨' },
-  { id: 'med', name: 'MED', emoji: '🏥' }
-];
+import { DEPARTMENTS } from '../lib/departments';
 
 export default function Profile() {
   const router = useRouter();
@@ -145,7 +130,6 @@ export default function Profile() {
           position: 'relative',
           overflow: 'hidden'
         }}>
-          {/* Градиентная полоска сверху */}
           <div style={{ 
             position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
             background: 'linear-gradient(90deg, #5865F2, #9C27B0, #00BCD4)'
@@ -226,62 +210,20 @@ export default function Profile() {
                 }}
               />
               <div style={{ display:'flex', gap:'8px' }}>
-                <button 
-                  onClick={saveName} 
-                  style={{ 
-                    flex:1,
-                    background:'rgba(76,175,80,0.15)',
-                    color:'#4CAF50',
-                    border:'1px solid rgba(76,175,80,0.3)',
-                    padding:'10px',
-                    borderRadius:'8px',
-                    fontSize:'13px',
-                    fontWeight:600
-                  }}
-                >
+                <button onClick={saveName} style={{ flex:1,background:'rgba(76,175,80,0.15)',color:'#4CAF50',border:'1px solid rgba(76,175,80,0.3)',padding:'10px',borderRadius:'8px',fontSize:'13px',fontWeight:600 }}>
                   Сохранить
                 </button>
-                <button 
-                  onClick={() => { setEditingName(false); setNewName(profile.fullName || ''); }} 
-                  style={{ 
-                    flex:1,
-                    background:'rgba(255,255,255,0.05)',
-                    color:'#8b8ba7',
-                    border:'1px solid rgba(255,255,255,0.1)',
-                    padding:'10px',
-                    borderRadius:'8px',
-                    fontSize:'13px',
-                    fontWeight:600
-                  }}
-                >
+                <button onClick={() => { setEditingName(false); setNewName(profile.fullName || ''); }} style={{ flex:1,background:'rgba(255,255,255,0.05)',color:'#8b8ba7',border:'1px solid rgba(255,255,255,0.1)',padding:'10px',borderRadius:'8px',fontSize:'13px',fontWeight:600 }}>
                   Отмена
                 </button>
               </div>
             </div>
           ) : (
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:'12px' }}>
-              <span style={{ 
-                color: profile.fullName ? 'white' : '#8b8ba7', 
-                fontSize:'14px',
-                fontFamily: profile.fullName ? 'JetBrains Mono, monospace' : 'inherit'
-              }}>
+              <span style={{ color: profile.fullName ? 'white' : '#8b8ba7', fontSize:'14px', fontFamily: profile.fullName ? 'JetBrains Mono, monospace' : 'inherit' }}>
                 {profile.fullName || 'Не указано'}
               </span>
-              <button 
-                onClick={() => setEditingName(true)} 
-                style={{ 
-                  background:'rgba(255,255,255,0.05)',
-                  color:'white',
-                  border:'1px solid rgba(255,255,255,0.1)',
-                  padding:'8px 14px',
-                  borderRadius:'8px',
-                  fontSize:'12px',
-                  fontWeight:600,
-                  display:'flex',
-                  alignItems:'center',
-                  gap:'6px'
-                }}
-              >
+              <button onClick={() => setEditingName(true)} style={{ background:'rgba(255,255,255,0.05)',color:'white',border:'1px solid rgba(255,255,255,0.1)',padding:'8px 14px',borderRadius:'8px',fontSize:'12px',fontWeight:600,display:'flex',alignItems:'center',gap:'6px' }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                   <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -309,87 +251,28 @@ export default function Profile() {
             <div>
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(90px,1fr))', gap:'8px', marginBottom:'12px' }}>
                 {DEPARTMENTS.map(d => (
-                  <button 
-                    key={d.id} 
-                    onClick={() => saveDepartment(d.id)} 
-                    style={{ 
-                      background: profile.department === d.id ? 'rgba(88,101,242,0.2)' : 'rgba(255,255,255,0.03)',
-                      border: `1px solid ${profile.department === d.id ? 'rgba(88,101,242,0.5)' : 'rgba(255,255,255,0.08)'}`,
-                      borderRadius:'10px',
-                      padding:'12px 8px',
-                      cursor:'pointer',
-                      color:'white',
-                      textAlign:'center',
-                      transition:'all 0.2s'
-                    }}
-                    onMouseEnter={e => { if (profile.department !== d.id) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
-                    onMouseLeave={e => { if (profile.department !== d.id) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
-                  >
+                  <button key={d.id} onClick={() => saveDepartment(d.id)} style={{ background: profile.department === d.id ? 'rgba(88,101,242,0.2)' : 'rgba(255,255,255,0.03)',border: `1px solid ${profile.department === d.id ? 'rgba(88,101,242,0.5)' : 'rgba(255,255,255,0.08)'}`,borderRadius:'10px',padding:'12px 8px',cursor:'pointer',color:'white',textAlign:'center',transition:'all 0.2s' }}>
                     <div style={{ fontSize:'22px' }}>{d.emoji}</div>
                     <div style={{ fontSize:'11px', marginTop:'4px', fontWeight:600 }}>{d.name}</div>
                   </button>
                 ))}
               </div>
-              <button 
-                onClick={() => { setEditingDept(false); }}
-                style={{ 
-                  width:'100%',
-                  background:'rgba(255,255,255,0.05)',
-                  color:'#8b8ba7',
-                  border:'1px solid rgba(255,255,255,0.1)',
-                  padding:'10px',
-                  borderRadius:'8px',
-                  fontSize:'13px',
-                  fontWeight:600
-                }}
-              >
+              <button onClick={() => { setEditingDept(false); }} style={{ width:'100%',background:'rgba(255,255,255,0.05)',color:'#8b8ba7',border:'1px solid rgba(255,255,255,0.1)',padding:'10px',borderRadius:'8px',fontSize:'13px',fontWeight:600 }}>
                 Отмена
               </button>
             </div>
           ) : (
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', gap:'12px', flexWrap:'wrap' }}>
-              <span style={{ 
-                color: currentDept ? 'white' : '#8b8ba7', 
-                fontSize:'15px',
-                display:'flex',
-                alignItems:'center',
-                gap:'8px',
-                fontWeight:600
-              }}>
+              <span style={{ color: currentDept ? 'white' : '#8b8ba7', fontSize:'15px', display:'flex', alignItems:'center', gap:'8px', fontWeight:600 }}>
                 {currentDept ? `${currentDept.emoji} ${currentDept.name}` : 'Не выбран'}
               </span>
               <div style={{ display:'flex', gap:'8px' }}>
                 {currentDept && (
-                  <button 
-                    onClick={() => saveDepartment('')} 
-                    style={{ 
-                      background:'rgba(220,53,69,0.1)',
-                      color:'#ff6b6b',
-                      border:'1px solid rgba(220,53,69,0.3)',
-                      padding:'8px 14px',
-                      borderRadius:'8px',
-                      fontSize:'12px',
-                      fontWeight:600
-                    }}
-                  >
+                  <button onClick={() => saveDepartment('')} style={{ background:'rgba(220,53,69,0.1)',color:'#ff6b6b',border:'1px solid rgba(220,53,69,0.3)',padding:'8px 14px',borderRadius:'8px',fontSize:'12px',fontWeight:600 }}>
                     Убрать
                   </button>
                 )}
-                <button 
-                  onClick={() => setEditingDept(true)} 
-                  style={{ 
-                    background:'rgba(33,150,243,0.15)',
-                    color:'#4fc3f7',
-                    border:'1px solid rgba(33,150,243,0.3)',
-                    padding:'8px 14px',
-                    borderRadius:'8px',
-                    fontSize:'12px',
-                    fontWeight:600,
-                    display:'flex',
-                    alignItems:'center',
-                    gap:'6px'
-                  }}
-                >
+                <button onClick={() => setEditingDept(true)} style={{ background:'rgba(33,150,243,0.15)',color:'#4fc3f7',border:'1px solid rgba(33,150,243,0.3)',padding:'8px 14px',borderRadius:'8px',fontSize:'12px',fontWeight:600,display:'flex',alignItems:'center',gap:'6px' }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
