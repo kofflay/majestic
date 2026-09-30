@@ -159,6 +159,19 @@ export default function AdminPage() {
             <p style={{ color:'#8b8ba7', fontSize:'13px', margin:0 }}>Список забаненных, разбан, сброс спам-лимитов</p>
           </div>
 
+          {/* Все заявки */}
+          <div
+            onClick={() => router.push('/admin/requests')}
+            style={{ ...cardStyle, cursor:'pointer', transition:'all 0.2s' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderColor = 'rgba(88,101,242,0.5)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
+          >
+            <div style={{ position:'absolute', top:0, left:0, width:'4px', height:'100%', background:'#5865F2' }} />
+            <div style={{ fontSize:'36px', marginBottom:'12px' }}>📥</div>
+            <h3 style={{ fontSize:'16px', marginBottom:'6px', fontWeight:600 }}>Все заявки</h3>
+            <p style={{ color:'#8b8ba7', fontSize:'13px', margin:0 }}>Список всех заявок с подсветкой старых</p>
+          </div>
+
           {/* Разблокировка сайта */}
           <div style={{ ...cardStyle }}>
             <div style={{ position:'absolute', top:0, left:0, width:'4px', height:'100%', background:'#F44336' }} />
