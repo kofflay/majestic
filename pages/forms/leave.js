@@ -1,21 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-const DEPARTMENTS = [
-  { id: 'af', name: 'AF', emoji: '✈️' },
-  { id: 'iad', name: 'IAD', emoji: '⚖️' },
-  { id: 'swat', name: 'SWAT', emoji: '🛡️' },
-  { id: 'pai', name: 'PAI', emoji: '🎓' },
-  { id: 'dvd', name: 'DVD', emoji: '🚗' },
-  { id: 'db', name: 'DB', emoji: '🕵️' },
-  { id: 'k9', name: 'K9', emoji: '🐕' },
-  { id: 'cpd', name: 'CPD', emoji: '🚔' },
-  { id: 'halt', name: 'HALT', emoji: '🚁' },
-  { id: 'ted', name: 'TED', emoji: '🔫' },
-  { id: 'srt', name: 'SRT', emoji: '🛡️' },
-  { id: 'nred', name: 'NRED', emoji: '🚨' },
-  { id: 'med', name: 'MED', emoji: '🏥' }
-];
+import { DEPARTMENTS } from '../../lib/departments';
 
 const LEAVE_TYPES = [
   { value: 'ooc', label: '🌍 OOC (по реальной жизни)' },
@@ -50,20 +35,20 @@ export default function LeaveForm() {
 
   const isValid = () => formData.leaveType && formData.fullName.trim() && formData.department && formData.reason.trim() && formData.startDate.trim() && formData.endDate.trim();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!isValid()) { window.toast.error('Заполните все поля!'); return; }
-  setSubmitting(true);
-  try {
-    const res = await fetch('/api/submit', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'leave', leaveType: formData.leaveType, fullName: formData.fullName, department: formData.department, reason: formData.reason, startDate: formData.startDate, endDate: formData.endDate })
-    });
-    if (res.ok) { window.toast.success('Заявка отправлена!'); router.push('/dashboard'); }
-    else { const err = await res.json(); throw new Error(err.error); }
-  } catch (e) { window.toast.error(e.message); }
-  finally { setSubmitting(false); }
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isValid()) { window.toast.error('Заполните все поля!'); return; }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/submit', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'leave', leaveType: formData.leaveType, fullName: formData.fullName, department: formData.department, reason: formData.reason, startDate: formData.startDate, endDate: formData.endDate })
+      });
+      if (res.ok) { window.toast.success('Заявка отправлена!'); router.push('/dashboard'); }
+      else { const err = await res.json(); throw new Error(err.error); }
+    } catch (e) { window.toast.error(e.message); }
+    finally { setSubmitting(false); }
+  };
 
   if (loading || !user) return <div style={{ display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#0a0a1a',color:'white' }}>Загрузка...</div>;
 
