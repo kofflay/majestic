@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import FormShell from '../../components/FormShell';
+import FormShell from '@/components/FormShell';
 
 const EXPERIENCE_OPTIONS = ['Нет опыта', 'Был в LSCSD', 'Был в FIB', 'Был в SANG', 'Другое'];
 const LAW_KNOWLEDGE = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
