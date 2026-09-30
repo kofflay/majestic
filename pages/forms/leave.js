@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import FormShell from '../../components/FormShell';
-import { DEPARTMENTS } from '../../lib/departments';
+import FormShell from '@/components/FormShell';
+import { DEPARTMENTS } from '@/lib/departments';
 
 const LEAVE_TYPES = [
   { value: 'ooc', label: '🌍 OOC (по реальной жизни)' },
