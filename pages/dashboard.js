@@ -43,7 +43,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ total: 0, today: 0 });
+  const [stats, setStats] = useState({ total: 0, today: 0, chart: [], maxCount: 1 });
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -202,100 +202,124 @@ export default function Dashboard() {
       {/* Контент */}
       <div style={{ padding: '0 20px 40px' }}>
 
-{/* График активности */}
-{stats.chart && stats.chart.length > 0 && (
-  <div style={{
-    maxWidth: '1200px',
-    margin: '0 auto 30px',
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.08)',
-    borderRadius: '16px',
-    padding: '24px',
-    position: 'relative',
-    overflow: 'hidden'
-  }}>
-    <div style={{ position:'absolute', top:0, left:0, right:0, height:'3px', background:'linear-gradient(90deg, #5865F2, #9C27B0, transparent)' }} />
-
-    <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'24px' }}>
-      <div style={{ width:'4px', height:'18px', background:'#5865F2', borderRadius:'2px' }} />
-      <h2 style={{ fontSize:'16px', margin:0, fontWeight:600 }}>📊 Активность за неделю</h2>
-    </div>
-
-    <div style={{
-      display: 'flex',
-      alignItems: 'flex-end',
-      justifyContent: 'space-between',
-      gap: '12px',
-      height: '180px',
-      padding: '0 8px'
-    }}>
-      {stats.chart.map((day, i) => {
-        const heightPercent = stats.maxCount > 0 ? (day.count / stats.maxCount) * 100 : 0;
-        const barHeight = Math.max(heightPercent, day.count > 0 ? 8 : 0);
-        
-        return (
+        {/* Статистика */}
+        <div style={{ maxWidth:'1200px', margin:'0 auto 20px', display:'flex', gap:'15px', flexWrap: 'wrap' }}>
+          <div style={{ flex:'1 1 150px', background:'rgba(88,101,242,0.1)', border:'1px solid rgba(88,101,242,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center' }}>
+            <div style={{ fontSize:'32px', fontWeight:700, color:'#5865F2' }}>{stats.today}</div>
+            <div style={{ color:'#8b8ba7', fontSize:'13px', marginTop:'5px', fontWeight:500 }}>Сегодня</div>
+          </div>
+          <div style={{ flex:'1 1 150px', background:'rgba(76,175,80,0.1)', border:'1px solid rgba(76,175,80,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center' }}>
+            <div style={{ fontSize:'32px', fontWeight:700, color:'#4CAF50' }}>{stats.total}</div>
+            <div style={{ color:'#8b8ba7', fontSize:'13px', marginTop:'5px', fontWeight:500 }}>Всего</div>
+          </div>
           <div 
-            key={i}
-            style={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '8px',
-              height: '100%',
-              justifyContent: 'flex-end',
-              position: 'relative'
-            }}
+            style={{ flex:'1 1 150px', background:'rgba(255,152,0,0.1)', border:'1px solid rgba(255,152,0,0.3)', borderRadius:'12px', padding:'20px', textAlign:'center', cursor:'pointer', transition:'all 0.2s' }} 
+            onClick={() => router.push('/history')}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,152,0,0.18)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,152,0,0.1)'}
           >
-            {/* Значение над столбиком */}
-            <div style={{
-              fontSize: '12px',
-              fontWeight: 600,
-              color: day.isToday ? '#5865F2' : (day.count > 0 ? 'white' : '#8b8ba7'),
-              opacity: day.count > 0 ? 1 : 0.4,
-              transition: 'opacity 0.2s'
-            }}>
-              {day.count}
+            <div style={{ fontSize:'32px', fontWeight:700, color:'#FF9800' }}>📋</div>
+            <div style={{ color:'#8b8ba7', fontSize:'13px', marginTop:'5px', fontWeight:500 }}>Мои заявки</div>
+          </div>
+        </div>
+
+        {/* График активности */}
+        {stats.chart && stats.chart.length > 0 && (
+          <div style={{
+            maxWidth: '1200px',
+            margin: '0 auto 30px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '16px',
+            padding: '24px',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{ position:'absolute', top:0, left:0, right:0, height:'3px', background:'linear-gradient(90deg, #5865F2, #9C27B0, transparent)' }} />
+
+            <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'24px' }}>
+              <div style={{ width:'4px', height:'18px', background:'#5865F2', borderRadius:'2px' }} />
+              <h2 style={{ fontSize:'16px', margin:0, fontWeight:600 }}>📊 Активность за неделю</h2>
             </div>
 
-            {/* Столбик */}
-            <div 
-              style={{
-                width: '100%',
-                maxWidth: '50px',
-                height: `${barHeight}%`,
-                minHeight: day.count > 0 ? '8px' : '4px',
-                background: day.isToday
-                  ? 'linear-gradient(180deg, #5865F2, #9C27B0)'
-                  : (day.count > 0 
-                    ? 'linear-gradient(180deg, rgba(88,101,242,0.7), rgba(88,101,242,0.3))'
-                    : 'rgba(255,255,255,0.05)'),
-                borderRadius: '8px 8px 4px 4px',
-                transition: 'all 0.3s',
-                boxShadow: day.isToday ? '0 4px 16px rgba(88,101,242,0.4)' : 'none'
-              }}
-            />
-
-            {/* День недели */}
             <div style={{
-              fontSize: '11px',
-              color: day.isToday ? 'white' : '#8b8ba7',
-              fontWeight: day.isToday ? 600 : 500,
-              textTransform: 'lowercase'
+              display: 'flex',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+              gap: '12px',
+              height: '180px',
+              padding: '0 8px'
             }}>
-              {day.label}
+              {stats.chart.map((day, i) => {
+                const heightPercent = stats.maxCount > 0 ? (day.count / stats.maxCount) * 100 : 0;
+                const barHeight = Math.max(heightPercent, day.count > 0 ? 8 : 0);
+                
+                return (
+                  <div 
+                    key={i}
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '8px',
+                      height: '100%',
+                      justifyContent: 'flex-end',
+                      position: 'relative'
+                    }}
+                  >
+                    <div style={{
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      color: day.isToday ? '#5865F2' : (day.count > 0 ? 'white' : '#8b8ba7'),
+                      opacity: day.count > 0 ? 1 : 0.4,
+                      transition: 'opacity 0.2s'
+                    }}>
+                      {day.count}
+                    </div>
+
+                    <div 
+                      style={{
+                        width: '100%',
+                        maxWidth: '50px',
+                        height: `${barHeight}%`,
+                        minHeight: day.count > 0 ? '8px' : '4px',
+                        background: day.isToday
+                          ? 'linear-gradient(180deg, #5865F2, #9C27B0)'
+                          : (day.count > 0 
+                            ? 'linear-gradient(180deg, rgba(88,101,242,0.7), rgba(88,101,242,0.3))'
+                            : 'rgba(255,255,255,0.05)'),
+                        borderRadius: '8px 8px 4px 4px',
+                        transition: 'all 0.3s',
+                        boxShadow: day.isToday ? '0 4px 16px rgba(88,101,242,0.4)' : 'none'
+                      }}
+                    />
+
+                    <div style={{
+                      fontSize: '11px',
+                      color: day.isToday ? 'white' : '#8b8ba7',
+                      fontWeight: day.isToday ? 600 : 500,
+                      textTransform: 'lowercase'
+                    }}>
+                      {day.label}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        );
-      })}
-    </div>
-  </div>
-)}
+        )}
 
         {/* Категории */}
         <div style={{ maxWidth:'1200px', margin:'0 auto' }}>
-          {categories.map(cat => (
-            <div key={cat.title} style={{ marginBottom:'32px' }}>
+          {categories.map((cat, catIdx) => (
+            <div 
+              key={cat.title} 
+              style={{ 
+                marginBottom:'32px',
+                animation: `sectionFadeIn 0.5s ease ${catIdx * 0.1}s both`
+              }}
+            >
 
               {/* Заголовок категории */}
               <div style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'16px' }}>
@@ -311,7 +335,7 @@ export default function Dashboard() {
 
               {/* Карточки */}
               <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'12px' }}>
-                {cat.items.map(item => (
+                {cat.items.map((item, itemIdx) => (
                   <div 
                     key={item.id} 
                     onClick={() => router.push(`/forms/${item.id}`)} 
@@ -326,7 +350,8 @@ export default function Dashboard() {
                       gap:'16px',
                       transition:'all 0.2s',
                       position:'relative',
-                      overflow:'hidden'
+                      overflow:'hidden',
+                      animation: `cardFadeIn 0.4s ease ${catIdx * 0.1 + itemIdx * 0.05}s both`
                     }}
                     onMouseEnter={e => {
                       e.currentTarget.style.transform = 'translateY(-2px)';
@@ -412,6 +437,31 @@ export default function Dashboard() {
           ))}
         </div>
       </div>
+
+      {/* CSS анимации */}
+      <style jsx global>{`
+        @keyframes cardFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes sectionFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
