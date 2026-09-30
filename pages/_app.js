@@ -5,6 +5,21 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [toasts, setToasts] = useState([]);
+
+  useEffect(() => {
+    window.toast = (message, type = 'info') => {
+      const id = Date.now() + Math.random();
+      setToasts(prev => [...prev, { id, message, type }]);
+      setTimeout(() => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+      }, 4000);
+    };
+
+    window.toast.success = (msg) => window.toast(msg, 'success');
+    window.toast.error = (msg) => window.toast(msg, 'error');
+    window.toast.info = (msg) => window.toast(msg, 'info');
+  }, []);
 
   useEffect(() => {
     let interval;
@@ -40,6 +55,12 @@ export default function App({ Component, pageProps }) {
       clearInterval(interval);
     };
   }, [router]);
+
+  const getToastColor = (type) => {
+    if (type === 'success') return { bg: 'rgba(76,175,80,0.15)', border: '#4CAF50', icon: '✓' };
+    if (type === 'error') return { bg: 'rgba(244,67,54,0.15)', border: '#F44336', icon: '✕' };
+    return { bg: 'rgba(88,101,242,0.15)', border: '#5865F2', icon: 'ℹ' };
+  };
 
   return (
     <>
@@ -87,13 +108,69 @@ export default function App({ Component, pageProps }) {
         </div>
       )}
 
+      <div style={{
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        zIndex: 100000,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+        pointerEvents: 'none'
+      }}>
+        {toasts.map(toast => {
+          const colors = getToastColor(toast.type);
+          return (
+            <div
+              key={toast.id}
+              style={{
+                background: colors.bg,
+                backdropFilter: 'blur(20px)',
+                border: `1px solid ${colors.border}`,
+                borderRadius: '12px',
+                padding: '16px 20px',
+                color: 'white',
+                fontSize: '14px',
+                fontWeight: 500,
+                maxWidth: '380px',
+                minWidth: '280px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                animation: 'slideIn 0.3s ease',
+                pointerEvents: 'auto'
+              }}
+            >
+              <div style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                background: colors.border,
+                color: 'white',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+                fontWeight: 700,
+                flexShrink: 0
+              }}>
+                {colors.icon}
+              </div>
+              <div style={{ flex: 1, lineHeight: 1.4 }}>{toast.message}</div>
+            </div>
+          );
+        })}
+      </div>
+
       <style jsx global>{`
-        * { 
-          margin: 0; 
-          padding: 0; 
-          box-sizing: border-box; 
+        @keyframes slideIn {
+          from { opacity: 0; transform: translateX(100px); }
+          to { opacity: 1; transform: translateX(0); }
         }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         html {
           font-size: 16px;
           -webkit-font-smoothing: antialiased;
@@ -108,28 +185,18 @@ export default function App({ Component, pageProps }) {
           line-height: 1.5;
         }
 
-        input, textarea, button, select {
-          font-family: inherit;
-        }
+        input, textarea, button, select { font-family: inherit; }
 
-        /* Цифры и код — моноширинный */
         code, .mono, [data-mono] {
           font-family: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
         }
 
-        /* Курсор */
         a, button, input, textarea, select, [onclick], .card, .back-btn, .submit-btn, .logout-btn, .copy-btn {
           cursor: pointer;
         }
 
-        /* Скроллбар */
-        ::-webkit-scrollbar {
-          width: 10px;
-          height: 10px;
-        }
-        ::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.02);
-        }
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
         ::-webkit-scrollbar-thumb {
           background: rgba(255, 255, 255, 0.1);
           border-radius: 5px;
@@ -141,30 +208,11 @@ export default function App({ Component, pageProps }) {
           background-clip: content-box;
         }
 
-        /* Селекты */
-        select option {
-          background: #1a1a3e;
-          color: white;
-        }
-
-        /* Убираем синее выделение */
-        ::selection {
-          background: rgba(88, 101, 242, 0.4);
-        }
-
-        /* Кнопки */
-        button {
-          transition: all 0.2s ease;
-        }
-
-        button:active:not(:disabled) {
-          transform: scale(0.98);
-        }
-
-        /* Inputs */
-        input:focus, textarea:focus, select:focus {
-          outline: none;
-        }
+        select option { background: #1a1a3e; color: white; }
+        ::selection { background: rgba(88, 101, 242, 0.4); }
+        button { transition: all 0.2s ease; }
+        button:active:not(:disabled) { transform: scale(0.98); }
+        input:focus, textarea:focus, select:focus { outline: none; }
       `}</style>
       <Component {...pageProps} />
     </>
