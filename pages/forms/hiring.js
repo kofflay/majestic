@@ -85,19 +85,18 @@ export default function HiringForm() {
         })
       });
 
-      if (res.ok) {
-        alert('✅ Заявка на трудоустройство успешно отправлена!');
-        router.push('/dashboard');
-      } else {
-        const error = await res.json();
-        throw new Error(error.error || 'Ошибка отправки');
-      }
-    } catch (error) {
-      alert('❌ Ошибка при отправке заявки: ' + error.message);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+if (res.ok) {
+  window.toast.success('Заявка на повышение отправлена!');
+  router.push('/dashboard');
+} else {
+  const error = await res.json();
+  throw new Error(error.error || 'Ошибка отправки');
+}
+} catch (error) {
+  window.toast.error(error.message);
+} finally {
+  setSubmitting(false);
+}
 
   if (loading || !user) {
     return (
